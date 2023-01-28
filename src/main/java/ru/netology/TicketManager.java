@@ -1,11 +1,14 @@
 package ru.netology;
 
+import java.util.Arrays;
+
 public class TicketManager {
     private TicketRepository ticketRepository;
 
     public TicketManager(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
+
     public void add(Ticket ticket) {
         ticketRepository.addTicket(ticket);
     }
@@ -15,8 +18,10 @@ public class TicketManager {
         return all;
     }
 
+
     public Ticket[] searchBy(String text1, String text2) {
         Ticket[] result = new Ticket[0];
+        PriceComparator priceComparator = new PriceComparator();
         for (Ticket ticket : ticketRepository.getAllTickets()) {
             if (matchesDeparture(ticket, text1) && matchesArrival(ticket, text2)) {
                 Ticket[] tmp = new Ticket[result.length + 1];
@@ -25,9 +30,12 @@ public class TicketManager {
                 }
                 tmp[tmp.length - 1] = ticket;
                 result = tmp;
+                Arrays.sort(result, priceComparator);
             }
         }
+
         return result;
+
     }
 
 
@@ -38,6 +46,7 @@ public class TicketManager {
             return false;
         }
     }
+
     public boolean matchesDeparture(Ticket ticket, String search) {
         if (ticket.getAirportDeparture().contains(search)) {
             return true;
@@ -45,4 +54,5 @@ public class TicketManager {
             return false;
         }
     }
+
 }
