@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Comparator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TicketManagerTest {
@@ -166,4 +168,25 @@ class TicketManagerTest {
         boolean expected = true;
         Assertions.assertEquals(expected, actual);
     }
-}
+
+    @Test
+    void testShouldFindAllSortByDuration() {
+        TicketRepository ticketRepository = new TicketRepository();
+        TicketManager ticketManager = new TicketManager(ticketRepository);
+        ticketManager.add(ticket1);
+        ticketManager.add(ticket2);
+        ticketManager.add(ticket3);
+        ticketManager.add(ticket4);
+        ticketManager.add(ticket5);
+        ticketManager.add(ticket6);
+        ticketManager.add(ticket7);
+        ticketManager.add(ticket8);
+        ticketManager.add(ticket9);
+        Comparator<Ticket> comparator = new DurationComparator();
+
+        Ticket[] actual = ticketManager.findAll("VIE", "TLV", comparator);
+        Ticket[] expected = {ticket9, ticket2, ticket1, ticket8};
+        Assertions.assertArrayEquals(expected, actual);
+
+    }
+    }

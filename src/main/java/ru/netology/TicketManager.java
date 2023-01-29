@@ -1,6 +1,7 @@
 package ru.netology;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class TicketManager {
     private TicketRepository ticketRepository;
@@ -37,6 +38,24 @@ public class TicketManager {
         return result;
 
     }
+    public Ticket[] findAll(String text1, String text2, Comparator<Ticket> comparator) {
+        Ticket[] result = new Ticket[0];
+        PriceComparator priceComparator = new PriceComparator();
+        for (Ticket ticket : ticketRepository.getAllTickets()) {
+            if (matchesDeparture(ticket, text1) && matchesArrival(ticket, text2)) {
+                Ticket[] tmp = new Ticket[result.length + 1];
+                for (int i = 0; i < result.length; i++) {
+                    tmp[i] = result[i];
+                }
+                tmp[tmp.length - 1] = ticket;
+                result = tmp;
+                Arrays.sort(result, comparator);
+            }
+        }
+
+        return result;
+
+    }
 
 
     public boolean matchesArrival(Ticket ticket, String search) {
@@ -54,5 +73,9 @@ public class TicketManager {
             return false;
         }
     }
-
+    // сервис поиска совпадений можно реализовать одним методом (не делить на два)
+//    private boolean matches(Ticket ticket, String from, String to) {
+//
+//    }
 }
+
